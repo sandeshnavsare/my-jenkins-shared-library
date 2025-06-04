@@ -1,1 +1,68 @@
-# K8s Deployment YAML
+# ===== resources/templates/kubernetes/deployment.yaml =====
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{APP_NAME}}
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{APP_NAME}}
+    version: {{VERSION}}
+    environment: {{ENVIRONMENT}}
+spec:
+  replicas: {{REPLICAS}}
+  selector:
+    matchLabels:
+      app: {{APP_NAME}}
+  template:
+    metadata:
+      labels:
+        app: {{APP_NAME}}
+        version: {{VERSION}}
+        environment: {{ENVIRONMENT}}
+    spec:
+      containers:
+      - name: {{APP_NAME}}
+        image: {{IMAGE_NAME}}:{{VERSION}}
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: {{ENVIRONMENT}}
+        - name: APP_VERSION
+          value: {{VERSION}}
+        resources:
+          requests:
+            cpu: {{RESOURCES_REQUESTS_CPU}}
+            memory: {{RESOURCES_REQUESTS_MEMORY}}
+          limits:
+            cpu: {{RESOURCES_LIMITS_CPU}}
+            memory: {{RESOURCES_LIMITS_MEMORY}}
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+          readOnly: true
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{APP_NAME}}-config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+---
