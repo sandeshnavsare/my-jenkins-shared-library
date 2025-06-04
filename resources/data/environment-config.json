@@ -1,4 +1,4 @@
-# ===== resources/data/environment-config.json =====
+#===== resources/data/environment-config.json =====
 {
   "environments": {
     "dev": {
