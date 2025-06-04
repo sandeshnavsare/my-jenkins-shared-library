@@ -1,1 +1,54 @@
-# K8s Service YAML
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{APP_NAME}}-service
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{APP_NAME}}
+    environment: {{ENVIRONMENT}}
+spec:
+  selector:
+    app: {{APP_NAME}}
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{APP_NAME}}-ingress
+  namespace: {{NAMESPACE}}
+  labels:
+    app: {{APP_NAME}}
+    environment: {{ENVIRONMENT}}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    {{#if TLS_ENABLED}}
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    {{/if}}
+spec:
+  {{#if TLS_ENABLED}}
+  tls:
+  - hosts:
+    - {{INGRESS_HOST}}
+    secretName: {{APP_NAME}}-tls
+  {{/if}}
+  rules:
+  - host: {{INGRESS_HOST}}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{APP_NAME}}-service
+            port:
+              number: 80
+
+---
