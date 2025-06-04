@@ -1,3 +1,12 @@
+// ===== vars/deployToEnvironment.groovy =====
+/**
+ * Deploy application to specified environment
+ * @param config Map containing deployment configuration
+ *   - environment: Target environment (dev, staging, prod)
+ *   - appName: Application name
+ *   - version: Version to deploy
+ *   - namespace: Kubernetes namespace (optional)
+ */
 def call(Map config) {
     def deployStage = new org.company.jenkins.pipeline.DeployStage(this)
     def envConfig = new org.company.jenkins.config.Environment()
