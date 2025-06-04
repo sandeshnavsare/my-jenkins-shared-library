@@ -1,4 +1,3 @@
-# ===== test/unit/vars/buildApplicationTest.groovy =====
 package vars
 
 import org.junit.*
