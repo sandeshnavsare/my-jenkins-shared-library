@@ -1,1 +1,126 @@
-{}
+# ===== resources/data/environment-config.json =====
+{
+  "environments": {
+    "dev": {
+      "display_name": "Development",
+      "description": "Development environment for testing new features",
+      "auto_deploy": true,
+      "require_approval": false,
+      "monitoring": {
+        "enabled": false,
+        "retention_days": 7
+      },
+      "backup": {
+        "enabled": false
+      },
+      "scaling": {
+        "min_replicas": 1,
+        "max_replicas": 2,
+        "cpu_threshold": 80
+      },
+      "features": {
+        "debug_mode": true,
+        "performance_profiling": true,
+        "experimental_features": true
+      }
+    },
+    "staging": {
+      "display_name": "Staging",
+      "description": "Staging environment for pre-production testing",
+      "auto_deploy": true,
+      "require_approval": true,
+      "approval_users": ["staging-approvers@company.com"],
+      "monitoring": {
+        "enabled": true,
+        "retention_days": 14,
+        "alerts": {
+          "error_rate_threshold": 5,
+          "response_time_threshold": 2000
+        }
+      },
+      "backup": {
+        "enabled": true,
+        "schedule": "0 2 * * *",
+        "retention_days": 7
+      },
+      "scaling": {
+        "min_replicas": 2,
+        "max_replicas": 4,
+        "cpu_threshold": 70
+      },
+      "features": {
+        "debug_mode": false,
+        "performance_profiling": true,
+        "experimental_features": false
+      }
+    },
+    "prod": {
+      "display_name": "Production",
+      "description": "Production environment serving live traffic",
+      "auto_deploy": false,
+      "require_approval": true,
+      "approval_users": ["prod-approvers@company.com", "tech-leads@company.com"],
+      "monitoring": {
+        "enabled": true,
+        "retention_days": 30,
+        "alerts": {
+          "error_rate_threshold": 1,
+          "response_time_threshold": 1000,
+          "disk_usage_threshold": 80,
+          "memory_usage_threshold": 85
+        }
+      },
+      "backup": {
+        "enabled": true,
+        "schedule": "0 1 * * *",
+        "retention_days": 30,
+        "offsite_backup": true
+      },
+      "scaling": {
+        "min_replicas": 3,
+        "max_replicas": 10,
+        "cpu_threshold": 60,
+        "memory_threshold": 75
+      },
+      "features": {
+        "debug_mode": false,
+        "performance_profiling": false,
+        "experimental_features": false
+      },
+      "security": {
+        "waf_enabled": true,
+        "rate_limiting": true,
+        "ip_whitelist": ["10.0.0.0/8", "172.16.0.0/12"]
+      }
+    }
+  },
+  "global_config": {
+    "notification_channels": {
+      "slack": {
+        "webhook_url": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK",
+        "channel": "#deployments",
+        "mention_users": ["@channel"]
+      },
+      "email": {
+        "smtp_server": "smtp.company.com",
+        "from_address": "jenkins@company.com"
+      }
+    },
+    "security": {
+      "image_scanning": {
+        "enabled": true,
+        "fail_on_critical": true,
+        "fail_on_high": false
+      },
+      "dependency_check": {
+        "enabled": true,
+        "fail_on_critical": true
+      }
+    },
+    "quality_gates": {
+      "code_coverage_threshold": 80,
+      "complexity_threshold": 10,
+      "duplication_threshold": 3
+    }
+  }
+}
