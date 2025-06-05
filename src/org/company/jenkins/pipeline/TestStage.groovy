@@ -103,11 +103,12 @@ class TestStage {
     /**
      * Publish test reports
      */
-    private def publishTestReports(Map config) {
-        script.echo "📊 Publishing test reports"
-        
-        switch (config.buildTool.toLowerCase()) {
-            case 'maven':
+   private def publishTestReports(Map config) {
+    script.echo "📊 Publishing test reports"
+
+    switch (config.buildTool.toLowerCase()) {
+        case 'maven':
+            if (script.fileExists('target/surefire-reports')) {
                 script.junit 'target/surefire-reports/*.xml'
                 script.publishHTML([
                     allowMissing: false,
@@ -117,9 +118,14 @@ class TestStage {
                     reportFiles: 'index.html',
                     reportName: 'Coverage Report'
                 ])
-                break
-            case 'gradle':
-                 script.junit 'build/test-results/test/*.xml'
+            } else {
+                script.echo "⚠️ No surefire test reports found to publish."
+            }
+            break
+
+        case 'gradle':
+            if (script.fileExists('build/test-results/test')) {
+                script.junit 'build/test-results/test/*.xml'
                 script.publishHTML([
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -128,10 +134,19 @@ class TestStage {
                     reportFiles: 'index.html',
                     reportName: 'Coverage Report'
                 ])
-                break
-            case 'npm':
+            } else {
+                script.echo "⚠️ No gradle test reports found to publish."
+            }
+            break
+
+        case 'npm':
+            if (script.fileExists('test-results.xml')) {
                 script.junit 'test-results.xml'
-                break
-        }
+            } else {
+                script.echo "⚠️ No npm test results found to publish."
+            }
+            break
     }
+}
+
 }
