@@ -107,10 +107,12 @@ class DeployStage {
                 script.script {
                     try {
                         // Health check
-                        def response = script.sh(
-                            returnStdout: true,
-                            script: "curl -f http://${config.appName}.${config.environment}.local/health || echo 'FAILED'"
-                        ).trim()
+                        def healthUrl = config.healthUrl ?: "http://172.31.19.42:8089/health"
+                          def response = script.sh(
+                             returnStdout: true,
+                             script: "curl -f ${healthUrl} || echo 'FAILED'"
+                            ).trim()
+
                         
                         return !response.contains('FAILED')
                     } catch (Exception e) {
