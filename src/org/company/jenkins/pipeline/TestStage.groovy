@@ -108,7 +108,7 @@ class TestStage {
         
         switch (config.buildTool.toLowerCase()) {
             case 'maven':
-                script.publishTestResults testsPattern: 'target/surefire-reports/*.xml'
+                script.junit 'target/surefire-reports/*.xml'
                 script.publishHTML([
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -119,7 +119,7 @@ class TestStage {
                 ])
                 break
             case 'gradle':
-                script.publishTestResults testsPattern: 'build/test-results/test/*.xml'
+                 script.junit 'build/test-results/test/*.xml'
                 script.publishHTML([
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
@@ -130,7 +130,7 @@ class TestStage {
                 ])
                 break
             case 'npm':
-                script.publishTestResults testsPattern: 'test-results.xml'
+                script.junit 'test-results.xml'
                 break
         }
     }
