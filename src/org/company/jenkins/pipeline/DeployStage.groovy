@@ -107,7 +107,7 @@ class DeployStage {
                 script.script {
                     try {
                         // Health check
-                        def healthUrl = config.healthUrl ?: "http://172.31.19.42:8089/health"
+                        def healthUrl = config.healthUrl ?: "http://172.31.26.111:8089/health"
                           def response = script.sh(
                              returnStdout: true,
                              script: "curl -f ${healthUrl} || echo 'FAILED'"
