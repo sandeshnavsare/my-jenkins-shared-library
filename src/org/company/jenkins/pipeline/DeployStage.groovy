@@ -110,7 +110,10 @@ class DeployStage {
                         def healthUrl = config.healthUrl ?: "http://172.31.26.111:8089/health"
                           def response = script.sh(
                              returnStdout: true,
-                             script: "curl -f ${healthUrl} || echo 'FAILED'"
+                              label: 'Check service health on agent',
+                              script: """
+                                 curl -s -o /dev/null -w "%{http_code}" ${healthUrl} || echo 'FAILED'
+                              """ 
                             ).trim()
 
                         
