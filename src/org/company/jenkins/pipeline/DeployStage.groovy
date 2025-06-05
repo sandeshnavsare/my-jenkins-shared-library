@@ -107,7 +107,7 @@ class DeployStage {
                 script.script {
                     try {
                         // Health check
-                        def healthUrl = config.healthUrl ?: "http://172.31.26.111:8089/health"
+                        def healthUrl = config.healthUrl ?: "http://172.31.26.111:8080/health"
                           def response = script.sh(
                              returnStdout: true,
                               label: 'Check service health on agent',
