@@ -54,7 +54,7 @@ class BuildStage {
         """
         
         if (!config.skipTests) {
-            script.publishTestResults testsPattern: 'target/surefire-reports/*.xml'
+            script.junit testsPattern: 'target/surefire-reports/*.xml'
         }
     }
     
